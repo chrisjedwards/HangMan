@@ -38,3 +38,9 @@ class Config:
     MAX_LIVES = _int_env("MAX_LIVES", 6)
     RATE_LIMIT = os.environ.get("RATE_LIMIT", "60 per minute")
     FLASK_DEBUG = _bool_env("FLASK_DEBUG", False)
+
+    # Guards on real Bedrock calls (services/ai.py:BedrockAI). Not in
+    # .env.example - these are advanced tuning knobs with safe defaults, and
+    # .env.example/README.md are outside this task's scope (backend/ only).
+    BEDROCK_MAX_TOKENS = _int_env("BEDROCK_MAX_TOKENS", 200)
+    BEDROCK_TIMEOUT_SECONDS = _int_env("BEDROCK_TIMEOUT_SECONDS", 8)

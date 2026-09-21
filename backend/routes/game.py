@@ -4,6 +4,7 @@ Owner: Chris (backend).
 
 from flask import Blueprint, current_app, jsonify, request
 
+from services.ai import AIError
 from services.game_state import STATUS_PLAYING, game_store
 from services.words import word_bank
 from utils.errors import ApiError
@@ -39,9 +40,11 @@ def generate_word():
         candidate = ai.generate_word(category, difficulty, recent_words)
         if validate_ai_word(candidate, difficulty):
             word = candidate.strip().upper()
-    except Exception:
-        # AI failure of any kind falls back to the fallback word list below -
-        # this is the "fallback words" safeguard called for in CLAUDE.md.
+    except AIError:
+        # AI failure falls back to the fallback word list below - this is
+        # the "fallback words" safeguard called for in CLAUDE.md. A bug
+        # elsewhere (not an AIError) is deliberately NOT caught here, so it
+        # still surfaces as a 500 instead of being masked as "AI failed".
         word = None
 
     if word is None:
@@ -105,19 +108,29 @@ def hint():
         raise ApiError("invalid_request", "No hints left", 400)
 
     ai = current_app.config["AI_PROVIDER"]
-    hint_text = None
+    hints_given = game.hints_used - 1  # hints given before this one
     try:
-        hints_given = game.hints_used - 1  # hints given before this one
-        candidate = ai.generate_hint(game.word, game.category, game.difficulty, hints_given)
-        if candidate and not hint_contains_word(candidate, game.word):
-            hint_text = candidate.strip()
-    except Exception:
-        hint_text = None
+        hint_text = ai.generate_hint(game.word, game.category, game.difficulty, hints_given)
+    except AIError as exc:
+        # No fallback text for hints - inventing text here would mean the
+        # player can't tell an AI-authored hint from a made-up one. The
+        # already-consumed hint attempt is a known, accepted trade-off (see
+        # docs/implementation.md); avoiding it would need a refund path that
+        # risks a race with concurrent requests for no real benefit here.
+        raise ApiError(
+            "ai_unavailable", "The hint service is temporarily unavailable", 502
+        ) from exc
 
-    if not hint_text:
-        hint_text = "No hint is available right now, but you've got this."
+    if hint_contains_word(hint_text, game.word):
+        # Defense in depth: BedrockAI already checks this itself, but the
+        # secret word is never trusted blindly at the point it could leak.
+        raise ApiError(
+            "ai_unavailable", "The hint service is temporarily unavailable", 502
+        )
 
-    return jsonify({"hint": hint_text, "hints_left": max_hints - game.hints_used})
+    return jsonify(
+        {"hint": hint_text.strip(), "hints_left": max_hints - game.hints_used}
+    )
 
 
 @game_bp.route("/comment", methods=["POST"])
@@ -130,9 +143,8 @@ def comment():
         raise ApiError("invalid_request", "The game is not over yet", 400)
 
     ai = current_app.config["AI_PROVIDER"]
-    comment_text = None
     try:
-        candidate = ai.generate_comment(
+        comment_text = ai.generate_comment(
             game.status,
             game.wrong_letters,
             game.lives,
@@ -142,15 +154,10 @@ def comment():
             game.category,
             game.word,
         )
-        comment_text = candidate.strip() if candidate else None
-    except Exception:
-        comment_text = None
+    except AIError as exc:
+        # No invented fallback text here either - see the hint endpoint.
+        raise ApiError(
+            "ai_unavailable", "The comment service is temporarily unavailable", 502
+        ) from exc
 
-    if not comment_text:
-        comment_text = (
-            "Nice game!"
-            if game.status == "won"
-            else "Good try - better luck next time!"
-        )
-
-    return jsonify({"comment": comment_text})
+    return jsonify({"comment": comment_text.strip()})
