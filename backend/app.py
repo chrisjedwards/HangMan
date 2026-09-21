@@ -50,6 +50,8 @@ def create_app(config_object=Config):
         app.config["MOCK_AI"],
         region=app.config["BEDROCK_REGION"],
         model_id=app.config["BEDROCK_MODEL_ID"],
+        max_tokens=app.config["BEDROCK_MAX_TOKENS"],
+        timeout_seconds=app.config["BEDROCK_TIMEOUT_SECONDS"],
     )
 
     app.config["RATELIMIT_DEFAULT"] = app.config["RATE_LIMIT"]

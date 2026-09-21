@@ -31,11 +31,53 @@ Status:
 - Problem: A Bedrock Converse call returned `AccessDeniedException`: "account is currently being verified".
 - Cause: The Free Plan account was approximately two weeks old and still undergoing verification.
 - Fix: TBD. Retest the same call later; if it persists after two hours, email `aws-verification@amazon.com`.
-- Status: OPEN.
+- Status: Resolved 2026-09-22, see below.
 
 ## 2026-09-21: Unknown /api/* URLs returned 200 instead of a JSON 404
 
 - Problem: Unknown `/api/*` URLs returned `200` with `index.html` instead of a JSON `404`.
 - Cause: The dev server's catch-all route for the frontend matched `/api/*` before the error handler.
 - Fix: Added an explicit `/api/<path>` route (all methods) that returns the contract's JSON 404; tested with GET and POST.
+- Status: Fixed.
+
+## 2026-09-22: Bedrock Converse AccessDeniedException resolved
+
+- Problem: Bedrock Converse returned `AccessDeniedException`: "account is currently being verified".
+- Cause: New AWS account verification, not yet complete when first tested (2026-09-21).
+- Fix: Waited; retested the same command the next day and it succeeded with no further action needed.
+- Status: Fixed.
+
+## 2026-09-22: Old dev server kept answering after a restart attempt
+
+- Problem: Restarting the dev server on the same port during manual testing left the old process still answering requests.
+- Cause: A background job (`%1`) does not carry across separate tool invocations, so the old server was never actually killed.
+- Fix: Kill by PID and verify with `ps`/`lsof` before starting a new instance.
+- Status: Fixed.
+
+## 2026-09-22: Verified .env loading from backend/
+
+- Problem: Needed to confirm `.env` loads correctly when running from `backend/`, not just from the repo root.
+- Cause: `load_dotenv()` default search behavior was assumed, not verified.
+- Fix: Verified with a one-off command that `BEDROCK_REGION` resolves correctly from `backend/`; documented in README.
+- Status: Fixed.
+
+## 2026-09-22: pytest ran against the global Python install instead of .venv
+
+- Problem: pytest ran against the global Python install instead of `.venv`, even after activating the virtual environment.
+- Cause: zsh's command hash table still pointed at the previously used global pytest binary from earlier in the session.
+- Fix: Recreated `.venv` from scratch, then ran `hash -r` to clear zsh's command cache; confirmed with `which pytest` and by checking the platform line in pytest's own output.
+- Status: Fixed.
+
+## 2026-09-22: Real Bedrock Converse calls failed with ResourceNotFoundException
+
+- Problem: Real Bedrock Converse calls (generate-word, hint, comment) all failed with `ResourceNotFoundException`.
+- Cause: "Model use case details have not been submitted for this account" - a separate AWS account setup step from the earlier verification issue.
+- Fix: TBD - submit the Anthropic model use case form in the Bedrock console for this account, then retry.
+- Status: Resolved 2026-09-22, see below.
+
+## 2026-09-22: Bedrock ResourceNotFoundException resolved
+
+- Problem: Real Bedrock Converse calls failed with `ResourceNotFoundException` ("use case details have not been submitted").
+- Cause: Anthropic requires first-time customers to submit use case details once per AWS account before invoking the model; the old "Model access" console page has been retired and this form is now under Model catalog instead.
+- Fix: Submitted the use case form (Model catalog > Claude Haiku 4.5) describing the school project; access granted within a few minutes.
 - Status: Fixed.

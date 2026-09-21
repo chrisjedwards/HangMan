@@ -41,3 +41,4 @@ Generate one new word.
 ## Version log
 
 - v1 = untested draft; log tuning in `docs/devlog.md`.
+- Real Bedrock verification (2026-09-22, `eu.anthropic.claude-haiku-4-5-20251001-v1:0`): the model returned the word in lowercase (`golang`) and added extra fields beyond the schema (`starts_with`, an unrequested `hint`). Not a bug - `validate_ai_word` already normalizes case and the code only reads the `word` field - but worth knowing if this prompt is tightened later.
