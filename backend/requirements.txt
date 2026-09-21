@@ -1,0 +1,6 @@
+flask
+boto3
+gunicorn
+python-dotenv
+flask-limiter
+pytest

@@ -1,0 +1,22 @@
+{
+  "programming_languages": {
+    "easy": ["JAVA", "RUST", "CSHARP", "RUBY", "SWIFT", "BASIC", "PERL", "KOTLIN"],
+    "medium": ["PYTHON", "KOTLIN", "HASKELL", "FORTRAN", "ELIXIR", "CLOSURE", "ERLANG", "GROOVY"],
+    "hard": ["JAVASCRIPT", "TYPESCRIPT", "POWERSHELL", "ASSEMBLY", "SMALLTALK", "COMMONLISP", "DARTLANG", "OBJECTIVE"]
+  },
+  "devops_tools": {
+    "easy": ["DOCKER", "HELM", "VAULT", "PUPPET", "NOMAD", "NGINX", "LINUX", "BASH"],
+    "medium": ["JENKINS", "ANSIBLE", "VAGRANT", "GRAFANA", "ARGOCD", "DEPLOYER", "PIPEWAY", "FLUXCD"],
+    "hard": ["TERRAFORM", "KUBERNETES", "PROMETHEUS", "CLOUDFORM", "HELMCHART", "PIPELINE", "GITHUBACT", "CONFIGURE"]
+  },
+  "aws_services": {
+    "easy": ["LAMBDA", "AURORA", "ECRREG", "SNSMSG", "SQSQUE", "AWSAPI", "CLOUD", "IAMKEY"],
+    "medium": ["FARGATE", "KINESIS", "BEDROCK", "REDSHIFT", "DYNAMODB", "APIGATE", "ECRIMAGE", "SAGEMAKE"],
+    "hard": ["CLOUDFRONT", "ELASTICDB", "CLOUDWATCH", "DATASYNC", "OPENSEARCH", "IAMACCESS", "WORKSPACES", "CODEBUILD"]
+  },
+  "linux_commands": {
+    "easy": ["ECHO", "FIND", "GREP", "SUDO", "CURL", "SORT", "HEAD", "TAIL"],
+    "medium": ["UNLINK", "CHMODX", "AWKLANG", "SEDUTIL", "TOUCHX", "CPFILES", "MVFILES", "PRINTF"],
+    "hard": ["TRACEROUTE", "NETWORKCTL", "JOURNALCTL", "SYSTEMCTL", "READLINK", "SHUTDOWN", "MOUNTPOINT", "FILEWATCH"]
+  }
+}
