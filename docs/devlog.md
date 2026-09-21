@@ -32,3 +32,10 @@ Status:
 - Cause: The Free Plan account was approximately two weeks old and still undergoing verification.
 - Fix: TBD. Retest the same call later; if it persists after two hours, email `aws-verification@amazon.com`.
 - Status: OPEN.
+
+## 2026-09-21: Unknown /api/* URLs returned 200 instead of a JSON 404
+
+- Problem: Unknown `/api/*` URLs returned `200` with `index.html` instead of a JSON `404`.
+- Cause: The dev server's catch-all route for the frontend matched `/api/*` before the error handler.
+- Fix: Added an explicit `/api/<path>` route (all methods) that returns the contract's JSON 404; tested with GET and POST.
+- Status: Fixed.

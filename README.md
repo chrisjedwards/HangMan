@@ -43,17 +43,36 @@ CLAUDE.md      Context and working rules for future sessions
 
 ## Local setup
 
-The following commands are **to be verified once the backend exists**:
+Verified 2026-09-22 against the backend in mock mode (Bedrock is not implemented
+yet - see [docs/implementation.md](docs/implementation.md)). All commands run
+from `backend/`:
 
 ```bash
+cd backend
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r backend/requirements.txt
-cp .env.example .env
-# Keep MOCK_AI=true for local UI work.
+pip install -r requirements.txt
+cp ../.env.example ../.env   # optional - the defaults already match .env.example
+python3 -m pytest            # 58 tests, all passing
+python3 app.py                # dev server on http://127.0.0.1:5000
 ```
 
-No API keys belong in this repository. Local AWS testing may use the developer's existing AWS CLI credentials, or `MOCK_AI=true` can provide canned responses once the backend supports it.
+`load_dotenv()` in `config.py` finds a `.env` at the repository root even when
+run from `backend/`, so `.env` belongs at the repo root, not inside `backend/`.
+
+To run the same way gunicorn will run it in production:
+
+```bash
+cd backend
+gunicorn --workers 1 --threads 4 "app:create_app()"
+```
+
+Gunicorn **must** use exactly one worker: game state lives only in that
+process's memory, so a second worker process would not see games created by
+the first (see the design note in `backend/config.py` and
+[docs/implementation.md](docs/implementation.md)).
+
+No API keys belong in this repository. Local AWS testing may use the developer's existing AWS CLI credentials, or `MOCK_AI=true` (the default) provides canned responses without any AWS calls.
 
 ## Environment variables
 
