@@ -293,9 +293,30 @@ button:disabled {
 
 .site-footer {
   text-align: center;
-  color: var(--text-dim);
-  font-size: 0.8rem;
   margin-top: 2rem;
+}
+
+.credit {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  color: var(--text-dim);
+}
+
+.credit-tag {
+  color: var(--panel-border);
+  margin-right: 0.15em;
+}
+
+.credit-name {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.credit-amp {
+  color: var(--text-dim);
+  margin: 0 0.1em;
 }
 
 /* Small phones */
