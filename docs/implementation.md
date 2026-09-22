@@ -153,11 +153,42 @@ speculatively.
 
 ## Frontend (Gaby)
 
-Status: not started
+Status: initial build complete, PR open for review, not yet merged
 
 ### What was actually built
 
+The frontend was implemented as plain HTML, CSS, and vanilla JavaScript under
+`frontend/` — no framework, no build step, mobile-first — matching the
+[API contract](api_contract.md): `index.html` (three screens: setup, game,
+end), `style.css` (dark theme, responsive layout, SVG hangman styling), and
+`script.js` (all fetch calls to `/api/generate-word`, `/api/guess`,
+`/api/hint`, `/api/comment`).
+
+The game state (masked word, lives left, wrong letters, status) is never
+stored or guessed client-side — every screen update comes directly from the
+backend's JSON response. The client only tracks which letters the player has
+already clicked, to disable those keyboard buttons locally.
+
+The hangman figure is drawn as inline SVG, with each body part (`part-head`,
+`part-body`, `part-arm-left`, `part-arm-right`, `part-leg-left`,
+`part-leg-right`) revealed incrementally based on `lives_left` versus
+`max_lives` from the `/api/guess` response.
+
+All three files were reviewed against `docs/api_contract.md` field by field
+(request/response shapes for all four endpoints) before being committed, to
+confirm the frontend and the documented contract stay in sync.
+
+Committed and pushed to branch `gaby/frontend`
+(`git add frontend/`, `git commit`, `git push -u origin gaby/frontend`), with
+a pull request opened against `main`, awaiting review before merge.
+
 ### Problems and solutions
+
+No functional issues encountered yet during this initial build. One
+cosmetic note: Git on Windows warned that LF line endings would be
+converted to CRLF on commit (`warning: LF will be replaced by CRLF`) — this
+is expected behavior on Windows and required no fix.
+
 
 ## Deployment (Chris)
 
