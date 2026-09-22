@@ -81,3 +81,10 @@ Status:
 - Cause: Anthropic requires first-time customers to submit use case details once per AWS account before invoking the model; the old "Model access" console page has been retired and this form is now under Model catalog instead.
 - Fix: Submitted the use case form (Model catalog > Claude Haiku 4.5) describing the school project; access granted within a few minutes.
 - Status: Fixed.
+
+## 2026-09-22: Leftover dev server process still bound to the port (third occurrence)
+
+- Problem: A leftover Flask/gunicorn dev server process from a previous session kept the port bound, so restarting the server risked the "old process still answering" bug (stale responses instead of fresh ones).
+- Cause: Background processes started in one terminal/agent session don't always get cleanly killed before the next session starts a new server on the same port.
+- Fix: Standard workaround now: check with `lsof -i :<port>` (or `ps`) before starting a new server instance, kill by PID if something is already listening, then start fresh.
+- Status: Recurring - always check before starting the dev server.

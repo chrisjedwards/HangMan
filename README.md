@@ -43,8 +43,9 @@ CLAUDE.md      Context and working rules for future sessions
 
 ## Local setup
 
-Verified 2026-09-22 against the backend in mock mode (Bedrock is not implemented
-yet - see [docs/implementation.md](docs/implementation.md)). All commands run
+Verified 2026-09-22 against the backend in mock mode (Bedrock is implemented -
+see `backend/services/ai.py`'s `BedrockAI` class and
+[docs/implementation.md](docs/implementation.md)). All commands run
 from `backend/`:
 
 ```bash
@@ -53,7 +54,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp ../.env.example ../.env   # optional - the defaults already match .env.example
-python3 -m pytest            # 58 tests, all passing
+python3 -m pytest            # 80 tests, all passing
 python3 app.py                # dev server on http://127.0.0.1:5000
 ```
 
