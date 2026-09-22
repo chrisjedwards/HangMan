@@ -9,6 +9,7 @@ gunicorn:
     gunicorn --workers 1 --threads 4 "app:create_app()"   # production-like
 """
 
+import logging
 import os
 
 from flask import Flask, send_from_directory
@@ -20,6 +21,8 @@ from routes.game import game_bp
 from routes.health import health_bp
 from services.ai import create_ai_provider
 from utils.errors import register_error_handlers
+
+logger = logging.getLogger(__name__)
 
 FRONTEND_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend"
@@ -53,6 +56,14 @@ def create_app(config_object=Config):
         max_tokens=app.config["BEDROCK_MAX_TOKENS"],
         timeout_seconds=app.config["BEDROCK_TIMEOUT_SECONDS"],
     )
+    if app.config["MOCK_AI"]:
+        logger.info("AI provider: MockAI (MOCK_AI=true)")
+    else:
+        logger.info(
+            "AI provider: BedrockAI (region=%s, model=%s)",
+            app.config["BEDROCK_REGION"],
+            app.config["BEDROCK_MODEL_ID"],
+        )
 
     app.config["RATELIMIT_DEFAULT"] = app.config["RATE_LIMIT"]
     limiter.init_app(app)
@@ -79,5 +90,6 @@ def create_app(config_object=Config):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     app = create_app()
     app.run(debug=app.config.get("FLASK_DEBUG", False))
