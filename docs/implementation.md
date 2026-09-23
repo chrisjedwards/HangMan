@@ -153,7 +153,7 @@ speculatively.
 
 ## Frontend (Gaby)
 
-Status: initial build complete, PR open for review, not yet merged
+Status: merged into `main` and deployed; verified live at http://51.20.142.127/
 
 ### What was actually built
 
