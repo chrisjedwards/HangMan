@@ -26,7 +26,7 @@ The goal is to plan an English-language AI Hangman web application for the schoo
 
 ## Cost planning
 
-The account is a Free Plan account with credits. A monthly $20 budget alert is being created. Our own estimate is approximately `$0.002` per game, but this is only a planning estimate made before Bedrock access was confirmed, not a measured cost. A public IP and EC2 instance can also create costs even when AI usage is low.
+The account is a Free Plan account with credits. A monthly $20 budget alert exists, created through Terraform (`aws_budgets_budget`, alerts at 50% and 80%). Our own estimate is approximately `$0.002` per game, but this is only a planning estimate made before Bedrock access was confirmed, not a measured cost. A public IP and EC2 instance can also create costs even when AI usage is low.
 
 Verified cost (2026-09-22): one full game (generate-word + hint + comment) used 408 tokens total on `eu.anthropic.claude-haiku-4-5-20251001-v1:0`, costing a small fraction of a cent.
 

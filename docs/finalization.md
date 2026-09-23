@@ -4,7 +4,7 @@
 
 ## Testing
 
-Status: local testing complete, AWS deployment pending
+Status: local and AWS testing complete
 
 **Automated:** `python3 -m pytest` in `backend/tests/` — 80 tests passing,
 covering game logic, validators, routes, and the AI layer (against a mocked
@@ -27,8 +27,6 @@ on-topic. Token usage: 397 tokens total across the three AI calls (~$0.0011).
 into `main`, the frontend was tested against the backend and the full
 pytest suite was re-run — still 80/80 passing, confirming the merge didn't
 break backend behavior.
-
-Not yet tested: deployment to AWS. No public URL has been tested.
 
 ## Improvements and optimization
 

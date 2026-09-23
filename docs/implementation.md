@@ -2,7 +2,7 @@
 
 # Phase 2: Implementation
 
-This document records what is actually built during Phase 2. It currently contains plans only.
+This document records what was actually built during Phase 2.
 
 ## Planned architecture
 
@@ -12,7 +12,7 @@ The server will own each game's secret word and the frontend will communicate th
 
 ## Backend (Chris)
 
-Status: mock complete, Bedrock not started
+Status: complete (mock mode first; Bedrock added later - see AI integration below)
 
 ### What was actually built
 
@@ -138,8 +138,6 @@ fence-stripping in `_parse_json_response` was a real, not speculative,
 safeguard. Both `generate-word`'s validation (accepting the lowercase word
 after normalizing) and `hint`'s leak check passed correctly against real
 model output, not just the mocked stub used in `tests/test_ai.py`.
-Real end-to-end verification with actual model output is still pending
-until the AWS use case form is submitted and access is confirmed.
 
 **Known limitation - hint attempt spent on AI failure:** `hint`'s
 hints-used counter is incremented before calling the AI, so a player who
@@ -153,7 +151,7 @@ speculatively.
 
 ## Frontend (Gaby)
 
-Status: initial build complete, PR open for review, not yet merged
+Status: initial build complete, merged into `main` (PR #3)
 
 ### What was actually built
 
@@ -171,8 +169,9 @@ already clicked, to disable those keyboard buttons locally.
 
 The hangman figure is drawn as inline SVG, with each body part (`part-head`,
 `part-body`, `part-arm-left`, `part-arm-right`, `part-leg-left`,
-`part-leg-right`) revealed incrementally based on `lives_left` versus
-`max_lives` from the `/api/guess` response.
+`part-leg-right`) revealed incrementally based on `lives_left` from each `/api/guess`
+response versus `max_lives`, which is read once from the
+`/api/generate-word` response and kept in client-side state.
 
 All three files were reviewed against `docs/api_contract.md` field by field
 (request/response shapes for all four endpoints) before being committed, to
@@ -180,7 +179,7 @@ confirm the frontend and the documented contract stay in sync.
 
 Committed and pushed to branch `gaby/frontend`
 (`git add frontend/`, `git commit`, `git push -u origin gaby/frontend`), with
-a pull request opened against `main`, awaiting review before merge.
+a pull request opened against `main`, later reviewed and merged (PR #3).
 
 ### Problems and solutions
 
@@ -192,10 +191,38 @@ is expected behavior on Windows and required no fix.
 
 ## Deployment (Chris)
 
-Status: not started
+Status: deployed and verified - see [finalization.md](finalization.md#deployment-and-publication)
 
 ### What was actually built
 
+Terraform (`terraform/`) provisions one `t3.micro` EC2 instance (Amazon
+Linux 2023) in the default VPC, a security group (HTTP 80 open, SSH 22
+restricted to `my_ip_cidr`), an IAM role and instance profile with an inline
+policy scoped to `bedrock:InvokeModel` and `bedrock:Converse` on the EU
+inference profile and its foundation-model ARNs, and a `$20`/month AWS
+Budget with 50%/80% email alerts. No access keys are used anywhere; the app
+reaches Bedrock through the instance profile.
+
+Cloud-init (`user_data.sh.tftpl`) installs Python 3, Nginx, and git, clones
+the repo, writes `.env` (`MOCK_AI=false`), builds `backend/.venv`, and starts
+a systemd service running `gunicorn --workers 1 --threads 4
+"app:create_app()"`, with Nginx as a reverse proxy to `127.0.0.1:8000` for
+both `/` and `/api/`.
+
+`terraform fmt` and `terraform validate` pass. `terraform apply` succeeded
+on 2026-09-22 (6 resources created, 0 errors) in `eu-north-1`. The public URL
+`http://51.20.142.127/` answered `GET /api/health` with `200 OK`, and a full
+game was then played through the browser against real Bedrock, with all
+requests returning `200` and the secret word only appearing after game over.
+Full details are in [finalization.md](finalization.md#deployment-and-publication)
+and the exact commands are in [terraform/README.md](../terraform/README.md).
+
 ### Problems and solutions
+
+See `docs/devlog.md` for the dated entry (2026-09-23) on merged code not
+appearing on the live server: cloud-init only clones the repo once, at first
+boot, so later merges to `main` are not picked up automatically. The update
+procedure is to SSH in, run `git pull` in `/opt/hangman`, then
+`sudo systemctl restart hangman`.
 
 ## Problems and solutions
