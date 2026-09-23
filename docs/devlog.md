@@ -88,3 +88,10 @@ Status:
 - Cause: Background processes started in one terminal/agent session don't always get cleanly killed before the next session starts a new server on the same port.
 - Fix: Standard workaround now: check with `lsof -i :<port>` (or `ps`) before starting a new server instance, kill by PID if something is already listening, then start fresh.
 - Status: Recurring - always check before starting the dev server.
+
+## 2026-09-23: Code merged to main did not automatically appear on the live EC2 server
+
+- Problem: Code merged to main on GitHub did not automatically appear on the live EC2 server.
+- Cause: cloud-init (which clones the repo) only runs once, at first instance boot - it does not re-sync on later git pushes.
+- Fix: SSH into the instance, `git pull` in `/opt/hangman`, then `sudo systemctl restart hangman` to pick up the new code.
+- Status: Fixed - documented as the standard update procedure going forward.
