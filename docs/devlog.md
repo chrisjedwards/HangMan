@@ -2,35 +2,25 @@
 
 # Development Log
 
-Use this entry format for real problems only:
-
-```text
-Date:
-Problem:
-Cause:
-Fix:
-Status:
-```
-
 ## 2026-09-21: Unexpected AWS cost
 
 - Problem: AWS cost was `$8.32` month-to-date on a Free Plan account, covered by credits.
 - Cause: A level1 EC2 `t3.micro` instance named `level1-devops-jan-2026`, started on 2026-08-30, was still running along with its public IPv4 address. This was found through Billing > Cost breakdown and a CLI loop over all regions. `curl` was used to check what it served.
 - Fix: Stopped it with `aws ec2 stop-instances`.
-- Status: Stopped; terminate/destroy it once confirmed unnecessary.
+- Status: Still stopped, not terminated (verified with `aws ec2 describe-instances` on 2026-09-23); terminate/destroy it once confirmed unnecessary.
 
 ## 2026-09-21: Billing access denied
 
 - Problem: IAM user `chris-admin` received "Access denied" in Billing.
 - Cause: Billing access required the root account.
-- Fix: Used the root account to view billing and start creating a monthly `$20` budget alert.
-- Status: In progress.
+- Fix: Used the root account to view billing. The monthly `$20` budget alert now exists as the `aws_budgets_budget` resource created by `terraform apply` on 2026-09-22 (alerts at 50% and 80%).
+- Status: Fixed.
 
 ## 2026-09-21: Bedrock account verification
 
 - Problem: A Bedrock Converse call returned `AccessDeniedException`: "account is currently being verified".
 - Cause: The Free Plan account was approximately two weeks old and still undergoing verification.
-- Fix: TBD. Retest the same call later; if it persists after two hours, email `aws-verification@amazon.com`.
+- Fix: Waited for verification to finish - see "2026-09-22: Bedrock Converse AccessDeniedException resolved" below.
 - Status: Resolved 2026-09-22, see below.
 
 ## 2026-09-21: Unknown /api/* URLs returned 200 instead of a JSON 404
@@ -72,7 +62,7 @@ Status:
 
 - Problem: Real Bedrock Converse calls (generate-word, hint, comment) all failed with `ResourceNotFoundException`.
 - Cause: "Model use case details have not been submitted for this account" - a separate AWS account setup step from the earlier verification issue.
-- Fix: TBD - submit the Anthropic model use case form in the Bedrock console for this account, then retry.
+- Fix: Submitted the Anthropic model use case form - see "2026-09-22: Bedrock ResourceNotFoundException resolved" below.
 - Status: Resolved 2026-09-22, see below.
 
 ## 2026-09-22: Bedrock ResourceNotFoundException resolved

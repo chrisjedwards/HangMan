@@ -2,7 +2,7 @@
 
 # API Contract
 
-This document is the synchronization point between Chris's backend and Gaby's frontend. The contract is planned and can be used to build the frontend against `MOCK_AI=true` once the backend exists.
+This document is the synchronization point between Chris's backend and Gaby's frontend. The backend implements this contract, and the frontend can be developed against it with `MOCK_AI=true`.
 
 ## General rules
 
@@ -86,7 +86,7 @@ Response `200`:
 }
 ```
 
-The endpoint is limited by `MAX_HINTS`.
+The endpoint is limited by `MAX_HINTS`. If the AI call fails, it returns `502` with `ai_unavailable`.
 
 ## POST /api/comment
 
@@ -102,7 +102,7 @@ Response `200` after game over:
 { "comment": "Nice debugging run. Your code survived the final test!" }
 ```
 
-This endpoint is rejected before the game is over.
+This endpoint is rejected before the game is over. If the AI call fails, it returns `502` with `ai_unavailable`.
 
 ## GET /api/health
 
@@ -114,7 +114,7 @@ Response `200`:
 
 ## Error examples
 
-Malformed or invalid input:
+Malformed or invalid input (`400`):
 
 ```json
 {
@@ -125,7 +125,7 @@ Malformed or invalid input:
 }
 ```
 
-Unknown game:
+Unknown game (`404`):
 
 ```json
 {
@@ -136,12 +136,47 @@ Unknown game:
 }
 ```
 
-Rate limited:
+Unknown API path (`404`):
+
+```json
+{
+  "error": {
+    "code": "not_found",
+    "message": "The requested resource was not found"
+  }
+}
+```
+
+Wrong HTTP method for an endpoint (`405`):
+
+```json
+{
+  "error": {
+    "code": "method_not_allowed",
+    "message": "This method is not allowed for this endpoint"
+  }
+}
+```
+
+Rate limited (`429`):
 
 ```json
 { "error": { "code": "rate_limited", "message": "Too many requests" } }
 ```
 
+AI service failed for `/api/hint` or `/api/comment` (`502`):
+
+```json
+{
+  "error": {
+    "code": "ai_unavailable",
+    "message": "The hint service is temporarily unavailable"
+  }
+}
+```
+
+`/api/comment` uses the message "The comment service is temporarily unavailable". `/api/generate-word` does not return `ai_unavailable`; it falls back to a word from `fallback_words.json` instead.
+
 ## Validation expectations
 
-The backend will validate categories, difficulties, game IDs, single A-Z letters, game status, hint limits, and model output. It will use fallback words if word generation fails or produces an invalid word. Timeouts and maximum model tokens are planned safeguards.
+The backend validates categories, difficulties, game IDs, single A-Z letters, game status, hint limits, and model output. It uses fallback words if word generation fails or produces an invalid word. Bedrock calls have a request timeout and a maximum token cap.

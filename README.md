@@ -2,9 +2,9 @@
 
 # AI Hangman
 
-AI Hangman is a planned web-based Hangman game with a programming and technology theme. Chris and Gaby are developing it for a school GenAI assignment. Generative AI is intended to be a central feature, while the server keeps the secret word private until the game ends.
+AI Hangman is a web-based Hangman game with a programming and technology theme. Chris and Gaby developed it for a school GenAI assignment. Generative AI is a central feature, while the server keeps the secret word private until the game ends.
 
-## Planned features
+## Features
 
 - English Hangman gameplay.
 - Programming, DevOps, AWS, and Linux word categories.
@@ -21,13 +21,13 @@ AI Hangman is a planned web-based Hangman game with a programming and technology
 - Hosting: AWS EC2, Nginx, systemd, Terraform, and cloud-init.
 - AI: one Claude model on AWS Bedrock.
 
-## Planned architecture
+## Architecture
 
 ```text
 Browser -> Nginx -> Gunicorn/Flask -> AWS Bedrock
 ```
 
-Nginx will serve the frontend and proxy `/api/` to Gunicorn on `127.0.0.1`, keeping the browser and API on the same origin. On EC2, the application is planned to use an IAM instance profile instead of API keys.
+Nginx proxies both `/` and `/api/` to Gunicorn on `127.0.0.1`, keeping the browser and API on the same origin. On EC2, the application uses an IAM instance profile instead of API keys.
 
 The frontend/backend synchronization contract is [docs/api_contract.md](docs/api_contract.md).
 
@@ -36,8 +36,8 @@ The frontend/backend synchronization contract is [docs/api_contract.md](docs/api
 ```text
 backend/       Flask application, services, prompts, fallback data, and tests
 frontend/      Plain HTML, CSS, and JavaScript
-terraform/     Planned AWS infrastructure and level3 course setup
- docs/         Research, implementation, API, devlog, and delivery documentation
+terraform/     AWS infrastructure (EC2, IAM, budget) and cloud-init
+docs/          Research, implementation, API, devlog, and delivery documentation
 CLAUDE.md      Context and working rules for future sessions
 ```
 
@@ -77,7 +77,7 @@ No API keys belong in this repository. Local AWS testing may use the developer's
 
 ## Environment variables
 
-| Variable           | Planned purpose                                | Example/default                               |
+| Variable           | Purpose                                        | Example/default                               |
 | ------------------ | ---------------------------------------------- | --------------------------------------------- |
 | `BEDROCK_REGION`   | AWS Bedrock region                             | `eu-north-1`                                  |
 | `BEDROCK_MODEL_ID` | Configurable Claude model or inference profile | `eu.anthropic.claude-haiku-4-5-20251001-v1:0` |
@@ -89,7 +89,9 @@ No API keys belong in this repository. Local AWS testing may use the developer's
 
 ## Deployment overview
 
-Status: planned. Terraform and cloud-init are intended to provision an EC2 instance, install Nginx/Python/Gunicorn, configure a systemd service, and connect the app to Bedrock. See [terraform/README.md](terraform/README.md).
+Status: deployed and verified. Live URL: http://51.20.142.127/
+
+Terraform and cloud-init provision an EC2 instance, install Nginx/Python/Gunicorn, configure a systemd service, and connect the app to Bedrock. See [terraform/README.md](terraform/README.md) and [docs/finalization.md](docs/finalization.md).
 
 ## Team and roles
 
@@ -117,14 +119,14 @@ Status: planned. Terraform and cloud-init are intended to provision an EC2 insta
 
 ## Status checklist
 
-- [ ] Repository skeleton reviewed
-- [ ] Backend implemented
-- [ ] Frontend implemented
+- [x] Repository skeleton reviewed
+- [x] Backend implemented
+- [x] Frontend implemented
 - [ ] Prompt testing completed
-- [ ] Automated tests completed
-- [ ] Terraform and cloud-init completed
-- [ ] AWS deployment completed
-- [ ] Public link verified
+- [x] Automated tests completed
+- [x] Terraform and cloud-init completed
+- [x] AWS deployment completed
+- [x] Public link verified
 - [ ] Documentation finalized
 - [ ] English screen recording completed
 - [ ] Final GitHub push completed
