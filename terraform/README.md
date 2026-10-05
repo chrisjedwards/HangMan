@@ -1,6 +1,8 @@
 # Terraform Deployment
 
-Status: applied and verified. Live public URL: http://51.20.142.127/
+Status: Deployed and verified on AWS (EC2 + Nginx + Bedrock), then torn down
+with `terraform destroy` after the project to avoid costs. Redeploy with the
+steps below.
 
 Deploys the already-tested Flask backend + frontend to one EC2 instance
 (Amazon Linux 2023), behind Nginx, talking to real Bedrock through an IAM
