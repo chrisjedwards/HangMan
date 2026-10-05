@@ -89,7 +89,9 @@ No API keys belong in this repository. Local AWS testing may use the developer's
 
 ## Deployment overview
 
-Status: deployed and verified. Live URL: http://51.20.142.127/
+Status: Deployed and verified on AWS (EC2 + Nginx + Bedrock), then torn down
+with `terraform destroy` after the project to avoid costs. Redeploy with the
+steps below.
 
 Terraform and cloud-init provision an EC2 instance, install Nginx/Python/Gunicorn, configure a systemd service, and connect the app to Bedrock. See [terraform/README.md](terraform/README.md) and [docs/finalization.md](docs/finalization.md).
 
