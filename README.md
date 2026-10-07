@@ -95,8 +95,8 @@ Terraform and cloud-init provision an EC2 instance, install Nginx/Python/Gunicor
 
 ## Team and roles
 
-- Chris: backend, AI integration, prompts, AWS deployment, and Phase 1-3 documentation.
-- Gaby: frontend, UI, game mechanics, testing, Phase 2 and Phase 4 documentation, and conclusion.
+- [Chris](https://github.com/chrisjedwards): backend, AI integration, prompts, AWS deployment, and Phase 1-3 documentation.
+- [Gaby](https://github.com/GabyCM78): frontend, UI, game mechanics, testing, Phase 2 and Phase 4 documentation, and conclusion.
 - Shared: prompt testing, frontend/backend synchronization, AWS testing, video, and final push.
 
 ## Git workflow
