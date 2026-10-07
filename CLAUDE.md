@@ -1,10 +1,10 @@
-<!-- DRAFT: review and rewrite in your own words before submitting -->
 
-# AI Hangman Project Context
+
+# HangDev
 
 ## Project
 
-AI Hangman is a planned English-language web game with a programming and technology theme. Chris and Gaby are building it for a school GenAI assignment.
+HangDev is an AI-powered Hangman game for developers, with words from programming, DevOps, AWS and Linux. Chris and Gaby developed it for a school GenAI assignment. Generative AI is a central feature, while the server keeps the secret word private until the game ends.
 
 ## Decisions
 
