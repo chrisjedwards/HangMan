@@ -4,7 +4,7 @@
 
 ## Project
 
-HangDev is an AI-powered Hangman game for developers, with words from programming, DevOps, AWS and Linux. Chris and Gaby developed it for a school GenAI assignment. Generative AI is a central feature, while the server keeps the secret word private until the game ends.
+HangDev is an English-language AI-powered Hangman game with a programming and technology theme. Chris and Gaby built it for a school GenAI assignment. The project is completed and was deployed on AWS (EC2 + Nginx + Bedrock), then torn down with `terraform destroy` to avoid costs.
 
 ## Decisions
 
