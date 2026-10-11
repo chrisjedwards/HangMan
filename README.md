@@ -2,6 +2,8 @@
 
 HangDev is an AI-powered Hangman game for developers, with words from programming, DevOps, AWS and Linux. Chris and Gaby developed it for a school GenAI assignment. Generative AI is a central feature, while the server keeps the secret word private until the game ends.
 
+![HangDev gameplay](docs/screenshots/hangdev.png)
+
 ## Features
 
 - English Hangman gameplay.
